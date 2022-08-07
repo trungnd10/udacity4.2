@@ -10,11 +10,14 @@ import { createLogger } from '../../utils/logger'
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    createLogger(`Event: ${event}`);
+    const log = createLogger(`Event: ${event}`);
 
     const todoId = event.pathParameters.todoId
+    console.log(`- todoId 1: ${todoId}`)
+    log.info(`- todoId 2: ${todoId}`)
     // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
     const userId = getUserId(event)
+    console.log('a1')
     const validTodo = await todoExists(todoId, userId)
 
     if (!validTodo) {
@@ -26,8 +29,10 @@ export const handler = middy(
       }
     }
 
+    console.log('a2')
     const url = await getSignedUploadUrl(todoId, userId)
 
+    console.log('a3')
     return {
       statusCode: 200,
       body: JSON.stringify({

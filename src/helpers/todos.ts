@@ -14,7 +14,8 @@ const XAWS = AWSXRay.captureAWS(AWS)
 const s3 = new XAWS.S3({
   signatureVersion: 'v4'
 })
-const bucketName = process.env.TODOS_S3_BUCKET
+// const bucketName = process.env.TODOS_S3_BUCKET
+const bucketName = process.env.ATTACHMENT_S3_BUCKET
 const urlExpiration: number = 300
 
 const todo = new TodosAccess()
@@ -54,6 +55,7 @@ export async function todoExists(todoId: string, userId: string) {
 }
 
 export async function getSignedUploadUrl(todoId: string, userId: string) {
+  console.log('bucket name:', bucketName)
   const signedUrl = s3.getSignedUrl('putObject', {
     Bucket: bucketName,
     Key: todoId,
