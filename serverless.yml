@@ -112,6 +112,7 @@ functions:
           cors: true
           authorizer:
             name: Auth
+            resultTtlInSeconds: 0
             # resultTtlInSeconds: 0
             # identitySource: $request.header.authorization
             # # identitySource: method.request.header.Authorization
@@ -133,6 +134,7 @@ functions:
           cors: true
           authorizer:
             name: Auth
+            resultTtlInSeconds: 0
           # request:
           #   schemas:
           #     application/json: ${file(models/create-todo-model.json)}
@@ -154,6 +156,7 @@ functions:
           cors: true
           authorizer:
             name: Auth
+            resultTtlInSeconds: 0
           reqValidatorName: RequestBodyValidator
           # documentation:
           #   summary: Update a Todo
@@ -166,6 +169,7 @@ functions:
           cors: true
           authorizer:
             name: Auth
+            resultTtlInSeconds: 0
           reqValidatorName: RequestBodyValidator
           # documentation:
           #   summary: Update a Todo
@@ -189,6 +193,7 @@ functions:
           cors: true
           authorizer:
             name: Auth
+            resultTtlInSeconds: 0
           reqValidatorName: RequestBodyValidator
 
   GenerateUploadUrl:
@@ -210,6 +215,7 @@ functions:
           cors: true
           authorizer:
             name: Auth
+            resultTtlInSeconds: 0
           reqValidatorName: RequestBodyValidator
 
 #    The following are a few example events you can configure
