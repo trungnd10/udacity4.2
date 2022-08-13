@@ -1,4 +1,4 @@
-import { TodosAccess } from './todosAcess'
+import { TodosAccess } from '../datalayer/todosAcess'
 // import { AttachmentUtils } from './attachmentUtils';
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
@@ -6,17 +6,11 @@ import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 // import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 // import * as createError from 'http-errors'
-import * as AWS from 'aws-sdk';
-import * as AWSXRay from 'aws-xray-sdk';
+import { getSignedUrl } from '../utils/s3'
 
 // TODO: Implement businessLogic
-const XAWS = AWSXRay.captureAWS(AWS)
-const s3 = new XAWS.S3({
-  signatureVersion: 'v4'
-})
-// const bucketName = process.env.TODOS_S3_BUCKET
+
 const bucketName = process.env.ATTACHMENT_S3_BUCKET
-const urlExpiration: number = 300
 
 const todo = new TodosAccess()
 
@@ -49,27 +43,15 @@ export async function deleteTodo(todoId: string, userId: string): Promise<void> 
 
 export async function todoExists(todoId: string, userId: string) {
   const item = await todo.getTodo(todoId, userId)
-
-  console.log('Get todo: ', item)
+  console.log('Todo item: ', item)
   return !!item
 }
 
 export async function getSignedUploadUrl(todoId: string, userId: string) {
-  console.log('bucket name:', bucketName)
-  const signedUrl = s3.getSignedUrl('putObject', {
-    Bucket: bucketName,
-    Key: todoId,
-    Expires: urlExpiration
-  })
-
+  const signedUrl = getSignedUrl(todoId)
   if (signedUrl) {
-    await addAttachmentUrl(bucketName, todoId, userId)
+    const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
+    await todo.updateTodoAttachment(todoId, userId, attachmentUrl)
     return signedUrl
   }
-}
-
-async function addAttachmentUrl(bucketName, todoId, userId) {
-  const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
-
-  await todo.updateTodoAttachment(todoId, userId, attachmentUrl)
 }
